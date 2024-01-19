@@ -2,6 +2,10 @@
 
 > LÖVE 2D TypeScript Sprite Character Movement
 
+
+https://github.com/syarul/tstl-2d-sprite-demo/assets/2774594/c24e2b67-8457-4b9e-bde5-938d66b2e831
+
+
 You can move with WSAD key
 
 You can also check the initial bare minimum code to see how to load sprites in `src/main_bare.ts`

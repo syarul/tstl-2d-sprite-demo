@@ -6,7 +6,7 @@ You can move with WSAD key
 
 You can also check the initial bare minimum code to see how to load sprites in `src/main_bare.ts`
 
-Assets is taken from [https://i.pinimg.com/originals/a6/47/f3/a647f30563977110e6bef77d171e00db.png](https://i.pinimg.com/originals/a6/47/f3/a647f30563977110e6bef77d171e00db.png)
+Asset is taken from [https://i.pinimg.com/originals/a6/47/f3/a647f30563977110e6bef77d171e00db.png](https://i.pinimg.com/originals/a6/47/f3/a647f30563977110e6bef77d171e00db.png)
 
 ## Scripts
 

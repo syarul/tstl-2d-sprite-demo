@@ -10,15 +10,19 @@ class Vector {
   }
 }
 
+type n = number;
+
+type quad = [n, n, n, n, n, n];
+
 // create an entity class
 class GameEntity {
   pos: Vector;
   sprite: string;
   spriteQuad: Quad;
-  constructor(pos: Vector, sprite: string) {
+  constructor(pos: Vector, sprite: string, quadParams: quad) {
     this.pos = pos;
     this.sprite = sprite;
-    this.spriteQuad = love.graphics.newQuad(0, 0, 64, 64, 256, 256);
+    this.spriteQuad = love.graphics.newQuad(...quadParams);
   }
   draw() {
     const sp: Image = love.graphics.newImage(this.sprite);
@@ -26,21 +30,15 @@ class GameEntity {
   }
 }
 
-let lastKey: KeyConstant;
-let lastKeyExtra: KeyConstant;
-let lastQuadPos: number;
-let lastDirection: KeyConstant;
-
-const step: number = 8;
 const keys: KeyConstant[] = ["w", "a", "s", "d"];
 const quadPos: number[] = [192, 64, 0, 128];
 const extraKeys: KeyConstant[] = ["up", "left", "down", "right"];
 
 function setPos(ctx: Player, direction: KeyConstant) {
-  if (direction === "down") ctx.pos.y += step;
-  if (direction === "up") ctx.pos.y -= step;
-  if (direction === "left") ctx.pos.x -= step;
-  if (direction === "right") ctx.pos.x += step;
+  if (direction === "down") ctx.pos.y += ctx.step;
+  if (direction === "up") ctx.pos.y -= ctx.step;
+  if (direction === "left") ctx.pos.x -= ctx.step;
+  if (direction === "right") ctx.pos.x += ctx.step;
 }
 
 function setViewportByDirection(
@@ -57,40 +55,57 @@ function setViewportByDirection(
     // move the player around, add constant step how far
     // the player move per tick
     setPos(ctx, direction);
-    lastKey = key;
-    lastKeyExtra = direction;
-    lastQuadPos = targetY;
-    lastDirection = direction;
+    ctx.lastKey = key;
+    ctx.lastKeyExtra = direction;
+    ctx.lastQuadPos = targetY;
+    ctx.lastDirection = direction;
   }
   // when ever the character endup in middle of a walking pos
   // indicate by quad 64/192, finish it to the next idle pos
   if (finish === true && (x === 64 || x === 192)) {
     ctx.spriteQuad.setViewport(x === 192 ? 0 : x + w, targetY, w, h);
-    setPos(ctx, lastDirection);
+    setPos(ctx, ctx.lastDirection);
   }
 }
 
-let delay = 0.1;
-let timeSinceLastUpdate = 0;
-let tlu = 0;
-let isMoved = false;
+interface state {
+  delay: number;
+  timeSinceLastUpdate: number;
+  isMoved: boolean;
+}
+
+const gameState: state = {
+  delay: 0.1,
+  timeSinceLastUpdate: 0,
+  isMoved: false,
+};
 
 // define a player class
 class Player extends GameEntity {
-  constructor(pos: Vector, sprite: string) {
-    super(pos, sprite);
+  tlu: number; // timeSinceLastUpdate
+  isKeyDown: boolean; // if key is press state
+  lastKey!: KeyConstant;
+  lastKeyExtra!: KeyConstant;
+  lastQuadPos!: number;
+  lastDirection!: KeyConstant;
+  step: number;
+  constructor(pos: Vector, sprite: string, step: number, quadParams: quad) {
+    super(pos, sprite, quadParams);
+    this.step = step;
+    this.tlu = 0;
+    this.isKeyDown = false;
   }
   update(dt: number) {
-    tlu += dt;
+    this.tlu += dt;
+    this.isKeyDown = false;
     let keyCounts: KeyConstant[] = [];
-    let isLocalMoved = false;
     keys.map((key: KeyConstant, i: number): void => {
       if (
         love.keyboard.isDown(key) ||
         (love.keyboard.isDown(extraKeys[i]) && !keyCounts.includes(key))
       ) {
-        isMoved = true;
-        isLocalMoved = true;
+        gameState.isMoved = true;
+        this.isKeyDown = true;
         keyCounts.push(key);
       } else {
         keyCounts = keyCounts.filter((k) => k !== key);
@@ -103,23 +118,34 @@ class Player extends GameEntity {
       });
     }
     // when a key is released trigger another movement after a delay
-    if (tlu >= delay && isMoved && !isLocalMoved) {
-      tlu = 0;
-      isMoved = false;
-      setViewportByDirection(this, lastKey, lastKeyExtra, lastQuadPos, true);
+    if (this.tlu >= gameState.delay && gameState.isMoved && !this.isKeyDown) {
+      this.tlu = 0;
+      gameState.isMoved = false;
+      setViewportByDirection(
+        this,
+        this.lastKey,
+        this.lastKeyExtra,
+        this.lastQuadPos,
+        true,
+      );
     }
   }
 }
 
-const player = new Player(new Vector(370, 250), "res/char.png");
+const player = new Player(
+  new Vector(370, 250),
+  "res/char.png",
+  8,
+  [0, 0, 64, 64, 256, 256],
+);
 
 love.update = function (dt: number) {
-  timeSinceLastUpdate += dt;
+  gameState.timeSinceLastUpdate += dt;
 
-  // add delay since the keyboard event is way to fast
-  if (timeSinceLastUpdate >= delay) {
+  // add delay since the pressing keyboard will trigger event loop
+  if (gameState.timeSinceLastUpdate >= gameState.delay) {
     player.update(dt);
-    timeSinceLastUpdate = 0;
+    gameState.timeSinceLastUpdate = 0;
   }
 };
 

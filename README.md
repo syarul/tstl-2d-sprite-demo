@@ -5,7 +5,8 @@
 https://github.com/syarul/tstl-2d-sprite-demo/assets/2774594/b8349957-d16e-4ab6-a5c1-0c5d0042f123
 
 ## Features & Updates
-- You can move with WASD or up,left,down and right keys
+
+- You can move with WASD or up, left, down and right keys
 - Added step to move the player position and also playing the sprites animation
 - Only accept one key movement at a time, which mean only vertical or horizontal move **limited by the sprites**
 - Added a delay event after a key release to do one last movement to idle pos incase the player is in the middle walking pos

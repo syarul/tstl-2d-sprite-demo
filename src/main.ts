@@ -65,7 +65,6 @@ function setViewportByDirection(
   // when ever the character endup in middle of a walking pos
   // indicate by quad 64/192, finish it to the next idle pos
   if (finish === true && (x === 64 || x === 192)) {
-    const [x, y, w, h] = ctx.spriteQuad.getViewport();
     ctx.spriteQuad.setViewport(x === 192 ? 0 : x + w, targetY, w, h);
     setPos(ctx, lastDirection);
   }
@@ -74,8 +73,8 @@ function setViewportByDirection(
 let delay = 0.1;
 let timeSinceLastUpdate = 0;
 let tlu = 0;
-
 let isMoved = false;
+
 // define a player class
 class Player extends GameEntity {
   constructor(pos: Vector, sprite: string) {

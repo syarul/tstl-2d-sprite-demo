@@ -2,7 +2,7 @@
 
 > LÖVE 2D TypeScript to Lua Sprite Character Movement
 
-https://github.com/syarul/tstl-2d-sprite-demo/assets/2774594/c24e2b67-8457-4b9e-bde5-938d66b2e831
+https://github.com/syarul/tstl-2d-sprite-demo/assets/2774594/b8349957-d16e-4ab6-a5c1-0c5d0042f123
 
 ## Features & Updates
 - You can move with WASD or up,left,down and right keys

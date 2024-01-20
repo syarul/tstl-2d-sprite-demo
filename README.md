@@ -1,6 +1,6 @@
 # ╰(°▽°)╯ TSTL Demo! ╰(°▽°)╯
 
-> LÖVE 2D TypeScript Sprite Character Movement
+> LÖVE 2D TypeScript to Lua Sprite Character Movement
 
 
 https://github.com/syarul/tstl-2d-sprite-demo/assets/2774594/c24e2b67-8457-4b9e-bde5-938d66b2e831
